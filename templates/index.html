@@ -1,0 +1,94 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>ALEX AI — Demo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <header class="wrap">
+    <h1>ALEX AI</h1>
+    <div class="pill">Demo</div>
+  </header>
+
+  <main class="wrap grid">
+    <!-- Knowledge -->
+    <section class="card">
+      <h2>Knowledge</h2>
+      <form id="textForm">
+        <textarea name="text" rows="4" placeholder="Paste product/service info here…"></textarea>
+        <button class="btn">Add Text</button>
+      </form>
+      <form id="urlForm" style="margin-top:12px;">
+        <input name="url" placeholder="https://example.com/page-to-learn">
+        <button class="btn">Add URL</button>
+      </form>
+      <p id="kbStatus" class="muted" style="margin-top:8px;"></p>
+    </section>
+
+    <!-- Chat -->
+    <section class="card">
+      <h2>Chat</h2>
+      <div class="row">
+        <select id="lang">
+          <option>EN</option><option>FR</option><option>ES</option>
+        </select>
+      </div>
+      <div id="chatBox" class="chat"></div>
+      <div class="row">
+        <input id="msg" placeholder="Ask something…">
+        <button id="send" class="btn">Send</button>
+      </div>
+      <p id="chatNote" class="muted">Uses OpenAI if key is set, otherwise a safe demo reply.</p>
+      <p id="usage" class="muted">Conversations used: 0 / 2000</p>
+    </section>
+
+    <!-- Integrations / Booking (mock) -->
+    <section class="card">
+      <h2>Integrations</h2>
+      <div class="toggles">
+        <label><input type="checkbox"> HubSpot</label>
+        <label><input type="checkbox"> GoHighLevel</label>
+        <label><input type="checkbox"> Pipedrive</label>
+        <label><input type="checkbox"> Zoho</label>
+        <label><input type="checkbox"> Salesforce</label>
+      </div>
+      <h3 style="margin-top:12px">Booking</h3>
+      <button class="btn" onclick="alert('Booked a mock slot!')">Book 10:00 Tue</button>
+    </section>
+  </main>
+
+  <script>
+    const kbStatus = document.getElementById('kbStatus');
+    document.getElementById('textForm').onsubmit = async (e)=>{
+      e.preventDefault();
+      const fd = new FormData(e.target);
+      const r = await fetch('/api/kb/add_text', {method:'POST', body:fd});
+      const j = await r.json(); kbStatus.textContent = j.ok ? `Chunks: ${j.chunks}` : j.error;
+    };
+    document.getElementById('urlForm').onsubmit = async (e)=>{
+      e.preventDefault();
+      const fd = new FormData(e.target);
+      const r = await fetch('/api/kb/add_url', {method:'POST', body:fd});
+      const j = await r.json(); kbStatus.textContent = j.ok ? `Chunks: ${j.chunks}` : j.error;
+    };
+
+    const chatBox = document.getElementById('chatBox');
+    const msg = document.getElementById('msg');
+    document.getElementById('send').onclick = async ()=>{
+      const text = msg.value.trim(); if(!text) return;
+      const lang = document.getElementById('lang').value;
+      chatBox.insertAdjacentHTML('beforeend', `<div class="bubble me">${text}</div>`);
+      msg.value = '';
+      const payload = { message:text, lang };
+      const r = await fetch('/api/chat', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(payload)});
+      const j = await r.json();
+      chatBox.insertAdjacentHTML('beforeend', `<div class="bubble bot">${(j.answer||'').replace(/</g,'&lt;')}</div>`);
+      const used = (j.usage && j.usage.conversations) || 0;
+      document.getElementById('usage').textContent = `Conversations used: ${used} / 2000`;
+      chatBox.scrollTop = chatBox.scrollHeight;
+    };
+  </script>
+</body>
+</html>
