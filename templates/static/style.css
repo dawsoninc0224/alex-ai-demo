@@ -1,0 +1,19 @@
+:root{--bg:#0D0D0D;--card:#1A1A1A;--text:#fff;--green:#00FF9C;--green2:#00CC7A}
+*{box-sizing:border-box}html,body{margin:0;background:var(--bg);color:var(--text);font-family:system-ui,Segoe UI,Inter,Roboto,sans-serif}
+.wrap{max-width:1100px;margin:0 auto;padding:18px}
+header{display:flex;align-items:center;gap:12px}
+h1{margin:0;font-weight:900}h2{margin:0 0 12px}h3{margin:8px 0}
+.pill{padding:6px 10px;border:1px solid rgba(255,255,255,.1);border-radius:999px;font-size:12px;color:#9fd}
+.grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px}
+@media (max-width:1000px){.grid{grid-template-columns:1fr}}
+.card{background:var(--card);border:1px solid rgba(255,255,255,.1);border-radius:16px;padding:14px}
+input,textarea,select{width:100%;padding:10px;border-radius:10px;border:1px solid rgba(255,255,255,.15);background:#000;color:#fff}
+.row{display:flex;gap:8px;align-items:center}
+.btn{background:var(--green);color:#000;border:0;border-radius:12px;padding:10px 14px;font-weight:700;cursor:pointer}
+.btn:hover{background:var(--green2)}
+.muted{color:rgba(255,255,255,.7);font-size:13px}
+.chat{height:260px;overflow:auto;border:1px solid rgba(255,255,255,.15);border-radius:12px;padding:10px;background:#0a0a0a;margin:8px 0}
+.bubble{max-width:85%;padding:10px 12px;border-radius:12px;margin:6px 0}
+.me{background:#111; margin-left:auto; border:1px solid rgba(255,255,255,.15)}
+.bot{background:linear-gradient(180deg, rgba(0,255,156,.18), rgba(0,0,0,.2)); border:1px solid rgba(0,255,156,.35)}
+.toggles label{display:inline-flex;align-items:center;gap:6px;margin-right:10px;margin-top:6px}
